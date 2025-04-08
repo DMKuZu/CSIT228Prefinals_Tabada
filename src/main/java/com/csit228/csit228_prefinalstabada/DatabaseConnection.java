@@ -73,7 +73,7 @@ public class DatabaseConnection {
         return ret;
     }
 
-    private List<Integer> getQuizId(){
+    public List<Integer> getQuizId(){
         String query = "SELECT id FROM quizzes";
         List<Integer> ret = new ArrayList<>();
 
@@ -91,8 +91,8 @@ public class DatabaseConnection {
         return ret;
     }
 
-    public List<String> getQuestions(){
-        String query = "SELECT title FROM quizzes";
+    public List<String> getQuestions(int id){
+        String query = "SELECT question FROM quizzes where quiz_id = '"+id+"'";
         List<String> ret = new ArrayList<>();
 
         try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -100,8 +100,43 @@ public class DatabaseConnection {
              ResultSet resultSet = statement.executeQuery(query)) {
 
             while (resultSet.next()) {
-                String quizName = resultSet.getString("title");
-                ret.add(quizName);
+                String question = resultSet.getString("question");
+                ret.add(question);
+            }
+        }catch (SQLException e){
+            System.out.println("From isTeacher " +e.getMessage());
+        }
+        return ret;
+    }
+
+    public List<String> getAnswers(int id){
+        String query = "SELECT answer FROM quizzes where quiz_id = '"+id+"'";
+        List<String> ret = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                String answer = resultSet.getString("answer");
+                ret.add(answer);
+            }
+        }catch (SQLException e){
+            System.out.println("From isTeacher " +e.getMessage());
+        }
+        return ret;
+    }
+
+    public int getNumOfQuestions(int id){
+        String query = "SELECT answer FROM quizzes where quiz_id = '"+id+"'";
+        int ret = 0;
+
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                ret += 1;
             }
         }catch (SQLException e){
             System.out.println("From isTeacher " +e.getMessage());
